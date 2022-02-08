@@ -249,6 +249,9 @@ public class Events extends ListenerAdapter {
 
     @Override
     public void onMessageUpdate(MessageUpdateEvent messageUpdateEvent) {
+        if (messageUpdateEvent.getAuthor().isBot())
+            return;
+
         String beforeMessage = null;
 
         for (LoggedMessage sentMessage : sentMessages)
@@ -268,14 +271,19 @@ public class Events extends ListenerAdapter {
         embedBuilder.addField(Lang.t("logs-member"), user.getAsTag() + " (" + user.getAsMention() + ")", true);
         embedBuilder.addField(Lang.t("logs-channel"), textChannel.getName() +  " (" + textChannel.getAsMention() + ")", true);
         embedBuilder.addField(Lang.t("logs-message-edited-before"), beforeMessage, false);
-        embedBuilder.addField(Lang.t("logs-message-edited-after"), Utils.limit(messageUpdateEvent.getMessage().getContentDisplay(), 1000), false);
+
+        String after = Utils.limit(messageUpdateEvent.getMessage().getContentDisplay(), 1000);
+
+        if (after.equals(""))
+            after = Lang.t("logs-message-edited-after-nomessage");
+
+        embedBuilder.addField(Lang.t("logs-message-edited-after"), after, false);
 
         Amiria.broadLog(embedBuilder.build());
     }
 
     @Override
     public void onMessageDelete(MessageDeleteEvent messageDeleteEvent) {
-
         TextChannel textChannel = messageDeleteEvent.getTextChannel();
 
         LoggedMessage loggedMessage = null;

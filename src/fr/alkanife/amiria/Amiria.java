@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class Amiria {
 
-    private static String version = "prod-3.0.0";
+    private static String version = "prod-3.0.1";
 
     private static Logger logger;
 
